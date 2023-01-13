@@ -1,0 +1,45 @@
+Deploy Master, Dev and Qa branch on Slave-1, Slave-2 and Slave-3 respectively using declarative pipeline.
+
+pipeline{
+    agent{
+        label{
+            label 'Slave-1'
+        }
+    }
+    stages{
+        stage('master'){
+            steps{
+                sh "git clone https://github.com/deshmukhmadhura/velocity.git -b master"
+                sh "cp -r /mnt/slave-1/workspace/Job-1/velocity/index.html /var/www/html"
+                sh "chmod -R 777 /var/www/html/"
+            }
+    }
+        stage('QA'){
+            agent{
+                label{
+                    label 'Slave-2'
+                }
+                
+            }
+            steps{
+                sh "git clone https://github.com/deshmukhmadhura/velocity.git -b QA"
+                sh "cp -r /mnt/slave-2/workspace/Job-1/velocity/index.html /var/www/html"
+                sh "chmod -R 777 /var/www/html/"
+            }
+            
+        }
+        stage('dev'){
+            agent{
+                label{
+                    label 'Slave-3'
+                }
+            }
+            steps{
+                sh "git clone https://github.com/deshmukhmadhura/velocity.git -b dev"
+                sh "cp -r /mnt/slave-3/workspace/Job-1/velocity/index.html /var/www/html"
+                sh "chmod -R 777 /var/www/html/"
+            }
+        }
+}
+
+}
