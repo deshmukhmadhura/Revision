@@ -1,0 +1,20 @@
+deploying branch in container
+
+pipeline{
+    agent{
+        label{
+            label 'built-in'
+            customWorkspace '/mnt/new'
+        }
+    }
+    stages{
+        stage('master-docker'){
+            steps{
+                sh "git clone https://github.com/deshmukhmadhura/velocity.git -b master"
+                sh "docker run -itdp 80:80 --name test-1 httpd"
+                sh "docker cp /mnt/new/velocity/index.html test-1:/usr/local/apache2/htdocs"
+                sh "chmod -R test-1:/usr/local/apache2/htdocs/index.html"
+            }
+        }
+    }
+}
