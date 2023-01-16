@@ -1,3 +1,4 @@
+
 Deploying GOL using S3
 
 
@@ -25,3 +26,21 @@ pipeline{
     }
         }
     }
+
+
+
+
+pipeline{
+    agent{
+        label{
+            label 'Slave-2'
+        }
+    }
+    stages{
+        stage('deploy'){
+            steps{
+                sh "aws s3 cp s3://velocity-100/gameoflife.war /mnt/server-2/apache-tomcat-9.0.71/webapps/"
+            }
+        }
+    }
+}
