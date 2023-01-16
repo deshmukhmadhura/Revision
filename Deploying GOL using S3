@@ -1,0 +1,27 @@
+Deploying GOL using S3
+
+
+pipeline{
+    agent{
+        label{
+            label 'built-in'
+            customWorkspace "/mnt/test"
+        }
+    }
+    stages{
+        stage('build-stage'){
+            steps{
+                sh "git clone https://github.com/deshmukhmadhura/game-of-life.git"
+                sh "rm -rf /root/.m2/repository/"
+                sh "cd /mnt/test/game-of-life/ && mvn clean install"
+                sh "scp -r /mnt/test/game-of-life/gameoflife-web/target/gameoflife.war /mnt/war"
+                sh "aws s3 cp /mnt/war/gameoflife.war s3://velocity-100"
+            }
+    }
+    stage('deploy'){
+        steps{
+            build 'JOB-1.1'
+        }
+    }
+        }
+    }
