@@ -30,8 +30,8 @@ pipeline{
         }
         stage("COPY-TO-DEV-QA-ENVS"){
             steps{
-                sh "scp -r /mnt/wars/gameoflife.war velocity@${devip}"
-                sh "scp -r /mnt/wars/gameoflife.war velocity@${qaip}"
+                sh "scp -r /mnt/wars/gameoflife.war velocity@${devip}:/mnt/wars"
+                sh "scp -r /mnt/wars/gameoflife.war velocity@${qaip}:/mnt/wars"
             }
         }
     }
