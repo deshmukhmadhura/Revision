@@ -1,0 +1,38 @@
+pipeline{
+    agent{
+        label{
+            label "built-in"
+            customWorkspace "/mnt/projects"
+        }
+    }
+    environment {
+        url = "https://github.com/deshmukhmadhura/game-of-life.git"
+        devip = "10.10.1.26"
+        qaip = "10.10.2.33"
+    }
+    stages{
+        stage('CLONE-PROJECT'){
+            steps{
+                sh "rm -rf *"
+                sh "git clone ${url}"
+            }
+        }
+        stage('BUILD-PROJECT'){
+            steps{
+                sh "rm -rf /home/velocity/.m2/"
+                sh "cd game-of-life && mvn clean install"
+            }
+        }
+        stage('COPY-WARS'){
+            steps{
+                sh "cp game-of-life/gameoflife-web/target/gameoflife.war /mnt/wars"
+            }
+        }
+        stage("COPY-TO-DEV-QA-ENVS"){
+            steps{
+                sh "scp -r /mnt/wars/gameoflife.war velocity@${devip}"
+                sh "scp -r /mnt/wars/gameoflife.war velocity@${qaip}"
+            }
+        }
+    }
+}
